@@ -52,6 +52,7 @@ body {
     text-align: center;
     white-space: nowrap;
     font-size: 20px;
+    max-width: none;
   }
 
   .youtube-link {
@@ -290,8 +291,8 @@ body {
   }
 
   .tooltip-card-image {
-    width: min(250px, 26vw);
-    max-height: 64vh;
+    width: min(280px, 28vw);
+    max-height: 68vh;
     object-fit: contain;
     border-radius: 8px;
     display: block;
@@ -402,6 +403,7 @@ body {
 
     .youtube-link {
       padding: 8px;
+      margin-right: 22px;
     }
 
     .footer {
