@@ -46,6 +46,11 @@ body {
     white-space: nowrap;
   }
 
+  .navbar-title {
+    line-height: 1.05;
+    white-space: normal;
+  }
+
   .youtube-link {
     display: inline-flex;
     align-items: center;
@@ -282,8 +287,8 @@ body {
   }
 
   .tooltip-card-image {
-    width: min(300px, 30vw);
-    max-height: 74vh;
+    width: min(270px, 28vw);
+    max-height: 68vh;
     object-fit: contain;
     border-radius: 8px;
     display: block;
@@ -367,8 +372,8 @@ body {
     }
 
     .tooltip-card-image {
-      width: min(320px, 72vw);
-      max-height: 62vh;
+      width: min(290px, 68vw);
+      max-height: 58vh;
     }
   }
 
@@ -428,7 +433,7 @@ body {
     }
 
     .tooltip-card-image {
-      width: min(390px, 92vw);
-      max-height: 68vh;
+      width: min(330px, 86vw);
+      max-height: 62vh;
     }
   }
