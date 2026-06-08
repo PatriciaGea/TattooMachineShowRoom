@@ -134,21 +134,27 @@ AFRAME.registerComponent("drag-rotate", {
 // HOVER ZOOM (SUAVE E ESTÁVEL)
 // =========================
 AFRAME.registerComponent("hover-zoom", {
+  schema: {
+    scale: { type: "number", default: 1.08 },
+    smoothness: { type: "number", default: 0.08 }
+  },
+
   init: function () {
     const el = this.el;
 
-    const baseScale = el.object3D.scale.clone();
+    this.baseScale = el.object3D.scale.clone();
+    this.targetScale = this.baseScale.clone();
 
     el.addEventListener("mouseenter", () => {
-      el.object3D.scale.set(
-        baseScale.x * 1.15,
-        baseScale.y * 1.15,
-        baseScale.z * 1.15
-      );
+      this.targetScale.copy(this.baseScale).multiplyScalar(this.data.scale);
     });
 
     el.addEventListener("mouseleave", () => {
-      el.object3D.scale.copy(baseScale);
+      this.targetScale.copy(this.baseScale);
     });
+  },
+
+  tick: function () {
+    this.el.object3D.scale.lerp(this.targetScale, this.data.smoothness);
   }
 });
