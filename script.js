@@ -35,6 +35,23 @@ AFRAME.registerComponent("proportional-card", {
 });
 
 // =========================
+// VR BUTTON
+// =========================
+const vrButton = document.getElementById("vrButton");
+const scene = document.querySelector("a-scene");
+
+if (vrButton && scene) {
+  vrButton.addEventListener("click", () => {
+    if (scene.is("vr-mode")) {
+      scene.exitVR();
+      return;
+    }
+
+    scene.enterVR();
+  });
+}
+
+// =========================
 // FLOATY (FLUTUAÇÃO SUAVE)
 // =========================
 AFRAME.registerComponent("floaty", {
@@ -202,6 +219,7 @@ AFRAME.registerComponent("hover-tooltip", {
   init: function () {
     this.tooltip = document.getElementById("hoverTooltip");
     this.text = this.el.dataset.tooltip;
+    this.image = this.el.dataset.tooltipImage;
     this.side = this.el.dataset.tooltipSide || "left";
     this.lastClickTime = 0;
 
@@ -229,6 +247,9 @@ AFRAME.registerComponent("hover-tooltip", {
     this.tooltip.classList.add("hint");
     this.tooltip.classList.remove("info");
     this.tooltip.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      this.tooltip.classList.add("visible");
+    });
   },
 
   handleClick: function () {
@@ -242,19 +263,45 @@ AFRAME.registerComponent("hover-tooltip", {
   },
 
   showInfo: function () {
-    if (!this.tooltip || !this.text) return;
+    if (!this.tooltip || (!this.text && !this.image)) return;
 
+    this.tooltip.classList.remove("visible");
+    this.tooltip.style.transition = "none";
     this.setTooltipPosition();
-    this.tooltip.textContent = this.text;
+    this.tooltip.textContent = "";
+
+    if (this.image) {
+      const image = document.createElement("img");
+
+      image.src = this.image;
+      image.alt = "";
+      image.className = "tooltip-card-image";
+      this.tooltip.appendChild(image);
+    } else {
+      this.tooltip.textContent = this.text;
+    }
+
     this.tooltip.classList.add("info");
     this.tooltip.classList.remove("hint");
     this.tooltip.classList.remove("hidden");
+    this.tooltip.offsetHeight;
+    this.tooltip.style.transition = "";
+
+    requestAnimationFrame(() => {
+      this.tooltip.classList.add("visible");
+    });
   },
 
   hide: function () {
     if (!this.tooltip) return;
 
-    this.tooltip.classList.add("hidden");
+    this.tooltip.classList.remove("visible");
+
+    window.setTimeout(() => {
+      if (!this.tooltip.classList.contains("visible")) {
+        this.tooltip.classList.add("hidden");
+      }
+    }, 280);
   },
 
   remove: function () {
