@@ -1,4 +1,40 @@
 // =========================
+// PROPORTIONAL CARD
+// =========================
+AFRAME.registerComponent("proportional-card", {
+  schema: {
+    maxWidth: { type: "number", default: 1.35 },
+    maxHeight: { type: "number", default: 0.95 }
+  },
+
+  init: function () {
+    const src = this.el.getAttribute("src");
+    const asset = src && src.startsWith("#") ? document.querySelector(src) : null;
+    const imageSrc = asset ? asset.getAttribute("src") : src;
+
+    if (!imageSrc) return;
+
+    const image = new Image();
+
+    image.onload = () => {
+      const ratio = image.naturalWidth / image.naturalHeight;
+      let width = this.data.maxWidth;
+      let height = width / ratio;
+
+      if (height > this.data.maxHeight) {
+        height = this.data.maxHeight;
+        width = height * ratio;
+      }
+
+      this.el.setAttribute("width", width);
+      this.el.setAttribute("height", height);
+    };
+
+    image.src = imageSrc;
+  }
+});
+
+// =========================
 // FLOATY (FLUTUAÇÃO SUAVE)
 // =========================
 AFRAME.registerComponent("floaty", {
