@@ -158,3 +158,73 @@ AFRAME.registerComponent("hover-zoom", {
     this.el.object3D.scale.lerp(this.targetScale, this.data.smoothness);
   }
 });
+
+// =========================
+// HOVER TOOLTIP
+// =========================
+AFRAME.registerComponent("hover-tooltip", {
+  init: function () {
+    this.tooltip = document.getElementById("hoverTooltip");
+    this.text = this.el.dataset.tooltip;
+    this.side = this.el.dataset.tooltipSide || "left";
+    this.lastClickTime = 0;
+
+    this.showHint = this.showHint.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.showInfo = this.showInfo.bind(this);
+    this.hide = this.hide.bind(this);
+
+    this.el.addEventListener("mouseenter", this.showHint);
+    this.el.addEventListener("mouseleave", this.hide);
+    this.el.addEventListener("click", this.handleClick);
+    this.el.addEventListener("dblclick", this.showInfo);
+  },
+
+  setTooltipPosition: function () {
+    this.tooltip.classList.toggle("left", this.side === "left");
+    this.tooltip.classList.toggle("right", this.side === "right");
+  },
+
+  showHint: function () {
+    if (!this.tooltip) return;
+
+    this.setTooltipPosition();
+    this.tooltip.textContent = "double click it";
+    this.tooltip.classList.add("hint");
+    this.tooltip.classList.remove("info");
+    this.tooltip.classList.remove("hidden");
+  },
+
+  handleClick: function () {
+    const now = Date.now();
+
+    if (now - this.lastClickTime < 350) {
+      this.showInfo();
+    }
+
+    this.lastClickTime = now;
+  },
+
+  showInfo: function () {
+    if (!this.tooltip || !this.text) return;
+
+    this.setTooltipPosition();
+    this.tooltip.textContent = this.text;
+    this.tooltip.classList.add("info");
+    this.tooltip.classList.remove("hint");
+    this.tooltip.classList.remove("hidden");
+  },
+
+  hide: function () {
+    if (!this.tooltip) return;
+
+    this.tooltip.classList.add("hidden");
+  },
+
+  remove: function () {
+    this.el.removeEventListener("mouseenter", this.showHint);
+    this.el.removeEventListener("mouseleave", this.hide);
+    this.el.removeEventListener("click", this.handleClick);
+    this.el.removeEventListener("dblclick", this.showInfo);
+  }
+});

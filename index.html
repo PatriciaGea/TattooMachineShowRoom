@@ -20,6 +20,8 @@
 
 <button id="vrButton">Entrar em VR</button>
 
+<div id="hoverTooltip" class="hover-tooltip hidden"></div>
+
 <!-- POPUP (ainda pronto pra você usar depois) -->
 <div id="popup" class="popup hidden">
   <h2>Detalhes da Máquina</h2>
@@ -51,8 +53,11 @@
       class="clickable"
       gltf-model="#model1"
       scale="1.35 1.35 1.35"
+      data-tooltip='Tattoo Machine at 1940 - 2016 designed created by Tattoo Artist "Sailor Jerry", model "Bulldog"'
+      data-tooltip-side="left"
       floaty
       hover-zoom
+      hover-tooltip
       drag-rotate="target: #wrapper1">
     </a-entity>
   </a-entity>
@@ -64,8 +69,11 @@
       class="clickable"
       gltf-model="#model2"
       scale="1.35 1.35 1.35"
+      data-tooltip="Tattoo Machine Cheyenne FK Irons 2016, Model Pen - 2026"
+      data-tooltip-side="right"
       floaty
       hover-zoom
+      hover-tooltip
       drag-rotate="target: #wrapper2">
     </a-entity>
   </a-entity>
