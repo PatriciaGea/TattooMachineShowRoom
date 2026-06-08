@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
@@ -122,12 +123,13 @@
   </a-entity>
 
   <!-- ================= OBJETO 2 ================= -->
-  <a-entity id="wrapper2" position="1.5 1.35 -3">
+  <a-entity id="wrapper2" position="1.5 1.35 -3" rotation="0 -45 0">
     <a-entity
       id="obj2"
       class="clickable"
       gltf-model="#model2"
       scale="1.35 1.35 1.35"
+      rotation="0 0 90"
       data-tooltip-image="public/card2.png"
       data-tooltip-side="right"
       floaty

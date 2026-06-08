@@ -184,7 +184,7 @@ body {
   }
   /* VR BUTTON */
   #vrButton {
-    position: absolute;
+    position: fixed;
     right: 20px;
     bottom: 60px;
     z-index: 20;
@@ -304,4 +304,131 @@ body {
   .hover-tooltip.info.hidden {
     transform: translateY(-50%);
     scale: 0.96;
+  }
+
+  @media (max-width: 900px) {
+    .navbar {
+      height: auto;
+      min-height: 74px;
+      padding: 8px 28px;
+      font-size: 20px;
+      gap: 8px;
+    }
+
+    .logo {
+      height: 52px;
+    }
+
+    .youtube-link {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .footer {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 9px 28px;
+      text-align: center;
+    }
+
+    .footer-left,
+    .footer-center,
+    .footer-right {
+      justify-self: center;
+    }
+
+    .footer-center {
+      font-size: 13px;
+      white-space: normal;
+    }
+
+    .footer-right {
+      justify-content: center;
+    }
+
+    #vrButton {
+      right: 28px;
+      bottom: 92px;
+    }
+
+    .hover-tooltip.left,
+    .hover-tooltip.right {
+      left: 50%;
+      right: auto;
+      transform: translate(-50%, -50%);
+    }
+
+    .hover-tooltip.visible {
+      transform: translate(-50%, -50%);
+    }
+
+    .hover-tooltip.info.hidden {
+      transform: translate(-50%, -50%);
+    }
+
+    .tooltip-card-image {
+      width: min(320px, 72vw);
+      max-height: 62vh;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .navbar {
+      padding: 8px 16px;
+      font-size: 17px;
+    }
+
+    .logo {
+      height: 44px;
+    }
+
+    .youtube-link span:last-child {
+      display: none;
+    }
+
+    .youtube-link {
+      padding: 8px;
+    }
+
+    .footer {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .footer-left,
+    .footer-credit {
+      font-size: 11px;
+    }
+
+    .footer-right {
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .footer-svg-icon {
+      width: 17px;
+      height: 17px;
+    }
+
+    #vrButton {
+      right: 16px;
+      bottom: 118px;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+
+    .synopsis-preview img {
+      max-width: 88vw;
+      max-height: 58vh;
+    }
+
+    .hover-tooltip.hint {
+      max-width: 240px;
+      font-size: 12px;
+    }
+
+    .tooltip-card-image {
+      width: min(390px, 92vw);
+      max-height: 68vh;
+    }
   }

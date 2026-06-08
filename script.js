@@ -52,6 +52,40 @@ if (vrButton && scene) {
 }
 
 // =========================
+// RESPONSIVE SCENE
+// =========================
+function updateResponsiveScene() {
+  const wrapper1 = document.getElementById("wrapper1");
+  const wrapper2 = document.getElementById("wrapper2");
+
+  if (!wrapper1 || !wrapper2) return;
+
+  if (window.innerWidth <= 560) {
+    wrapper1.setAttribute("position", "-0.82 1.2 -3.25");
+    wrapper2.setAttribute("position", "0.82 1.2 -3.25");
+    return;
+  }
+
+  if (window.innerWidth <= 900) {
+    wrapper1.setAttribute("position", "-1.1 1.28 -3.15");
+    wrapper2.setAttribute("position", "1.1 1.28 -3.15");
+    return;
+  }
+
+  wrapper1.setAttribute("position", "-1.5 1.35 -3");
+  wrapper2.setAttribute("position", "1.5 1.35 -3");
+}
+
+window.addEventListener("resize", updateResponsiveScene);
+window.addEventListener("orientationchange", updateResponsiveScene);
+
+if (scene) {
+  scene.addEventListener("loaded", updateResponsiveScene);
+}
+
+updateResponsiveScene();
+
+// =========================
 // FLOATY (FLUTUAÇÃO SUAVE)
 // =========================
 AFRAME.registerComponent("floaty", {
