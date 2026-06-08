@@ -3,6 +3,7 @@ body {
     overflow: hidden;
     font-family: Arial;
     background: black;
+    touch-action: none;
   }
   
   /* NAV */

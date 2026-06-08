@@ -1,80 +1,154 @@
-// FLOAT
-AFRAME.registerComponent('floaty', {
-    schema: { speed: { type: 'number', default: 1 } },
-  
-    tick: function (time) {
-      this.el.object3D.position.y += Math.sin(time * 0.001 * this.data.speed) * 0.002;
-    }
-  });
-  
-  
-  // HOVER ZOOM
-  AFRAME.registerComponent('hover-zoom', {
-    init: function () {
-      this.originalScale = this.el.object3D.scale.clone();
-  
-      this.el.addEventListener('mouseenter', () => {
-        this.el.object3D.scale.multiplyScalar(1.2);
-      });
-  
-      this.el.addEventListener('mouseleave', () => {
-        this.el.object3D.scale.copy(this.originalScale);
-      });
-    }
-  });
-  
-  
-  // CLICK POPUP
-  AFRAME.registerComponent('clickable', {
-    schema: { text: { type: 'string' } },
-  
-    init: function () {
-      this.el.addEventListener('click', () => {
-        openPopup(this.data.text);
-      });
-    }
-  });
-  
-  
-  // POPUP FUNCTIONS
-  function openPopup(text) {
-    document.getElementById("popupText").innerText = text;
-    document.getElementById("popup").classList.remove("hidden");
-  }
-  
-  function closePopup() {
-    document.getElementById("popup").classList.add("hidden");
-  }
-  
-  
-  // VR BUTTON
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("vrButton").addEventListener("click", () => {
-      const scene = document.querySelector("a-scene");
-      scene.enterVR();
-    });
-  });
-  let mouseX = 0;
-let mouseY = 0;
-
-// captura mouse
-document.addEventListener("mousemove", (event) => {
-  mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-  mouseY = (event.clientY / window.innerHeight) * 2 - 1;
-});
-
-AFRAME.registerComponent("mouse-follow", {
+// =========================
+// FLOATY (FLUTUAÇÃO SUAVE)
+// =========================
+AFRAME.registerComponent("floaty", {
   schema: {
-    intensity: { type: "number", default: 1 }
+    speed: { type: "number", default: 1 }
   },
 
-  tick: function () {
+  init: function () {
+    this.baseY = this.el.object3D.position.y;
+  },
+
+  tick: function (time) {
+    this.el.object3D.position.y =
+      this.baseY + Math.sin(time * 0.001 * this.data.speed) * 0.15;
+  }
+});
+
+// =========================
+// DRAG ROTATE (GIRAR OBJETO)
+// =========================
+AFRAME.registerComponent("drag-rotate", {
+  schema: {
+    target: { type: "selector" },
+    speed: { type: "number", default: 0.45 }
+  },
+
+  init: function () {
+    const el = this.el;
+    this.target = this.data.target || el;
+    this.isDragging = false;
+    this.lastX = 0;
+    this.lastY = 0;
+    this.pointer = { x: 0, y: 0 };
+    this.camera = document.querySelector("a-camera");
+
+    this.trackPointer = this.trackPointer.bind(this);
+    this.onStart = this.onStart.bind(this);
+    this.onMove = this.onMove.bind(this);
+    this.onEnd = this.onEnd.bind(this);
+
+    window.addEventListener("mousedown", this.trackPointer, true);
+    window.addEventListener("touchstart", this.trackPointer, true);
+    window.addEventListener("mousemove", this.trackPointer);
+    window.addEventListener("touchmove", this.trackPointer, { passive: true });
+    el.addEventListener("mousedown", this.onStart);
+    el.addEventListener("touchstart", this.onStart, { passive: false });
+    window.addEventListener("mousemove", this.onMove);
+    window.addEventListener("touchmove", this.onMove, { passive: false });
+    window.addEventListener("mouseup", this.onEnd);
+    window.addEventListener("touchend", this.onEnd);
+    window.addEventListener("touchcancel", this.onEnd);
+  },
+
+  getPointer: function (event) {
+    const source =
+      (event.touches && event.touches[0]) ||
+      (event.changedTouches && event.changedTouches[0]) ||
+      (event.detail && event.detail.mouseEvent) ||
+      (event.detail && event.detail.touchEvent && event.detail.touchEvent.touches && event.detail.touchEvent.touches[0]) ||
+      event;
+
+    if (!source || !Number.isFinite(source.clientX) || !Number.isFinite(source.clientY)) {
+      return this.pointer;
+    }
+
+    return {
+      x: source.clientX,
+      y: source.clientY
+    };
+  },
+
+  trackPointer: function (event) {
+    this.pointer = this.getPointer(event);
+  },
+
+  onStart: function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const pointer = this.getPointer(event);
+    this.isDragging = true;
+    this.lastX = pointer.x;
+    this.lastY = pointer.y;
+
+    if (this.camera) {
+      this.camera.setAttribute("look-controls", "enabled", false);
+    }
+  },
+
+  onMove: function (event) {
+    if (!this.isDragging) return;
+
+    event.preventDefault();
+    const pointer = this.getPointer(event);
+    const deltaX = pointer.x - this.lastX;
+    const deltaY = pointer.y - this.lastY;
+
+    this.target.object3D.rotation.y += THREE.MathUtils.degToRad(deltaX * this.data.speed);
+    this.target.object3D.rotation.x += THREE.MathUtils.degToRad(deltaY * this.data.speed);
+
+    this.lastX = pointer.x;
+    this.lastY = pointer.y;
+  },
+
+  onEnd: function () {
+    if (!this.isDragging) return;
+
+    this.isDragging = false;
+
+    if (this.camera) {
+      this.camera.setAttribute("look-controls", "enabled", true);
+    }
+  },
+
+  remove: function () {
     const el = this.el;
 
-    const targetX = mouseY * this.data.intensity;
-    const targetY = mouseX * this.data.intensity;
+    window.removeEventListener("mousedown", this.trackPointer, true);
+    window.removeEventListener("touchstart", this.trackPointer, true);
+    window.removeEventListener("mousemove", this.trackPointer);
+    window.removeEventListener("touchmove", this.trackPointer);
+    el.removeEventListener("mousedown", this.onStart);
+    el.removeEventListener("touchstart", this.onStart);
+    window.removeEventListener("mousemove", this.onMove);
+    window.removeEventListener("touchmove", this.onMove);
+    window.removeEventListener("mouseup", this.onEnd);
+    window.removeEventListener("touchend", this.onEnd);
+    window.removeEventListener("touchcancel", this.onEnd);
+  }
+});
 
-    el.object3D.rotation.x += (targetX - el.object3D.rotation.x) * 0.05;
-    el.object3D.rotation.y += (targetY - el.object3D.rotation.y) * 0.05;
+// =========================
+// HOVER ZOOM (SUAVE E ESTÁVEL)
+// =========================
+AFRAME.registerComponent("hover-zoom", {
+  init: function () {
+    const el = this.el;
+
+    const baseScale = el.object3D.scale.clone();
+
+    el.addEventListener("mouseenter", () => {
+      el.object3D.scale.set(
+        baseScale.x * 1.15,
+        baseScale.y * 1.15,
+        baseScale.z * 1.15
+      );
+    });
+
+    el.addEventListener("mouseleave", () => {
+      el.object3D.scale.copy(baseScale);
+    });
   }
 });

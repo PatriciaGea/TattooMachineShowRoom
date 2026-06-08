@@ -5,77 +5,89 @@
 
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-  <!-- partículas -->
- 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- UI -->
+<!-- ================= UI ================= -->
+
 <div class="navbar">Tattoo Machine Showroom</div>
 
 <div class="footer">
-  Mouse: explorar • Hover: zoom • Clique: info • VR disponível
+  Mouse/toque: arrastar para girar • Hover: zoom • VR disponível
 </div>
 
-<!-- BOTÃO VR -->
 <button id="vrButton">Entrar em VR</button>
 
-<!-- POPUP -->
+<!-- POPUP (ainda pronto pra você usar depois) -->
 <div id="popup" class="popup hidden">
   <h2>Detalhes da Máquina</h2>
-  <p id="popupText">Texto aqui...</p>
+  <p id="popupText">Clique em um hotspot</p>
   <button onclick="closePopup()">Fechar</button>
 </div>
 
+<!-- ================= SCENE ================= -->
+
 <a-scene vr-mode-ui="enabled: true">
 
+  <!-- MODELOS -->
   <a-assets>
     <a-asset-item id="model1" src="model1.glb"></a-asset-item>
     <a-asset-item id="model2" src="model2.glb"></a-asset-item>
   </a-assets>
 
-  <!-- FUNDO PRETO -->
+  <!-- FUNDO -->
   <a-sky color="#000000"></a-sky>
-
-
 
   <!-- LUZES -->
   <a-entity light="type: ambient; intensity: 0.6"></a-entity>
   <a-entity light="type: directional; intensity: 1.2" position="2 4 3"></a-entity>
 
-  <a-entity
-  id="obj1"
-  gltf-model="#model1"
-  position="-1.5 1 -3"
-  scale="1.2 1.2 1.2"
-  floaty="speed: 1"
-  mouse-follow="intensity: 0.8">
-</a-entity>
+  <!-- ================= OBJETO 1 ================= -->
+  <a-entity id="wrapper1" position="-1.5 1 -3">
+    <a-entity
+      id="obj1"
+      class="clickable"
+      gltf-model="#model1"
+      floaty
+      hover-zoom
+      drag-rotate="target: #wrapper1">
+    </a-entity>
+  </a-entity>
 
-<a-entity
-  id="obj2"
-  gltf-model="#model2"
-  position="1.5 1 -3"
-  scale="1.2 1.2 1.2"
-  floaty="speed: 1.2"
-  mouse-follow="intensity: 1.2">
-</a-entity>
+  <!-- ================= OBJETO 2 ================= -->
+  <a-entity id="wrapper2" position="1.5 1 -3">
+    <a-entity
+      id="obj2"
+      class="clickable"
+      gltf-model="#model2"
+      floaty
+      hover-zoom
+      drag-rotate="target: #wrapper2">
+    </a-entity>
+  </a-entity>
 
-  <!-- HOTSPOT -->
+  <!-- HOTSPOT (vai usar depois com popup) -->
   <a-sphere
     id="hotspot"
+    class="clickable"
     position="0 2 -2.5"
     radius="0.06"
     color="red">
   </a-sphere>
 
-  <!-- CÂMERA -->
-  <a-camera look-controls wasd-controls position="0 1.6 0"></a-camera>
+  <!-- CAMERA (IMPORTANTE PARA CLIQUE FUNCIONAR) -->
+  <a-camera
+    look-controls
+    wasd-controls
+    raycaster="objects: .clickable"
+    cursor="rayOrigin: mouse">
+  </a-camera>
 
 </a-scene>
 
+<!-- JS -->
 <script src="script.js"></script>
 
 </body>
