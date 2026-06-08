@@ -189,7 +189,7 @@ AFRAME.registerComponent("hover-tooltip", {
     if (!this.tooltip) return;
 
     this.setTooltipPosition();
-    this.tooltip.textContent = "double click it";
+    this.tooltip.textContent = "Drag it, or double click it";
     this.tooltip.classList.add("hint");
     this.tooltip.classList.remove("info");
     this.tooltip.classList.remove("hidden");
